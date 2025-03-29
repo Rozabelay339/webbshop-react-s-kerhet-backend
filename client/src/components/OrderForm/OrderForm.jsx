@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { OrderService } from '../../services/ApiService';
+import './OrderForm.css';
 
 const OrderForm = () => {
   const [name, setName] = useState('');
@@ -45,8 +46,8 @@ const OrderForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <label>Name:</label>
+    <form className="order-form" onSubmit={handleSubmit}>
+      <label>Fullname:</label>
       <input type="text" value={name} onChange={(e) => setName(e.target.value)} required />
 
       <label>Address:</label>
@@ -68,7 +69,7 @@ const OrderForm = () => {
 
       <button type="submit" disabled={loading}>{loading ? 'Submitting...' : 'Submit Order'}</button>
 
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {error && <p className="error-message">{error}</p>}
     </form>
   );
 };

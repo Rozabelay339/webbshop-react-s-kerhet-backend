@@ -1,0 +1,60 @@
+/* OrderForm.css */
+
+.order-form {
+    max-width: 400px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+  }
+  
+  .order-form label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+  }
+  
+  .order-form input {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #d8b4ed;
+    border-radius: 4px;
+  }
+  
+  .order-form button {
+    margin-top: 15px;
+    padding: 10px;
+    width: 100%;
+    border: none;
+    border-radius: 4px;
+    background-color: #502c5e;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .order-form button:hover {
+    background-color:  #781a9a;
+  }
+  
+  .order-form ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .order-form li {
+    background-color: #fff;
+    padding: 8px;
+    margin-top: 5px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+  }
+  
+  .error-message {
+    color: red;
+    font-weight: bold;
+    margin-top: 10px;
+  }
+  
