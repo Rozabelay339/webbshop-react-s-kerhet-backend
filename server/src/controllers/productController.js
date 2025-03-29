@@ -10,13 +10,19 @@ export const getProducts = async (req, res) => {
 };
 
 export const createProduct = async (req, res) => {
-  const { name, description, price, image } = req.body;
-  const newProduct = new Product({ name, description, price, image });
+  const { name, description, price, image, category } = req.body;
+
+  if (!name || !description || !price || !image || !category) {
+    return res.status(400).json({ error: 'All fields are required' });
+  }
+
+  const newProduct = new Product({ name, description, price, image, category });
 
   try {
     await newProduct.save();
     res.status(201).json(newProduct);
   } catch (error) {
+    console.error('Error saving product:', error);
     res.status(400).json({ error: 'Error creating product' });
   }
 };

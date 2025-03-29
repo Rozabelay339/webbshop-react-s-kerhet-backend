@@ -1,18 +1,22 @@
-
 import jwt from 'jsonwebtoken';
 
-const authMiddleware = (req, res, next) => {
-  const token = req.header('Authorization');
+const protect = async (req, res, next) => {
+  let token;
 
-  if (!token) return res.status(403).json({ message: 'Access denied' });
+  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+    try {
+      token = req.headers.authorization.split(' ')[1];
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded; // Attaching the decoded info to req.user
-    next();
-  } catch (error) {
-    res.status(400).json({ message: 'Invalid token' });
+      req.user = decoded; // Attach decoded JWT payload
+      return next(); // Move to next middleware
+    } catch (error) {
+      console.error('Token verification failed:', error.message);
+      return res.status(401).json({ message: 'Not authorized, token failed' });
+    }
   }
+
+  return res.status(401).json({ message: 'Not authorized, no token' });
 };
 
-export default authMiddleware;
+export { protect };
