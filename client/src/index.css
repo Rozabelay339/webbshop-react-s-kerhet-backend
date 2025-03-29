@@ -1,0 +1,14 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+button:focus {
+  outline: 2px solid #000; /* Example outline when button is focused */
+}
+
+input:focus {
+  outline: 2px solid #000; /* Example outline when input is focused */
+}
+
