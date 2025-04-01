@@ -1,19 +1,20 @@
-// src/routes/orderRoutes.js
 import express from 'express';
-import Order from '../models/orderModel.js'; // Make sure this path is correct
+import {
+  createOrder,
+  getAllOrders,
+  getOrdersByUserName,
+  getOrderById,
+  deleteAllOrders,
+  deleteOrderById,
+} from '../controllers/orderController.js';
 
 const router = express.Router();
 
-// Create a new order
-router.post('/', async (req, res) => {
-  const { name, address, items } = req.body;
-  const newOrder = new Order({ name, address, items });
-  try {
-    const savedOrder = await newOrder.save();
-    res.status(201).json(savedOrder);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
-});
+router.post('/', createOrder);            // Create order
+router.get('/', getAllOrders);            // Get all orders
+router.get('/user/:name', getOrdersByUserName);  // Get orders by user name
+router.get('/:id', getOrderById);         // Get order by ID
+router.delete('/all', deleteAllOrders);   // Delete all orders
+router.delete('/:id', deleteOrderById);   // Delete order by ID
 
 export default router;

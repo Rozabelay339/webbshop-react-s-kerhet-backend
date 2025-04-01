@@ -18,17 +18,17 @@ if (!process.env.JWT_SECRET || !process.env.MONGO_URI) {
 
 app.use(express.json()); // Parse incoming JSON requests
 
-// CORS Configuration
+// CORS Configuration (Allow all origins for testing)
 const corsOptions = {
-  origin: ['http://localhost:5173', 'http://127.0.0.1:5500'],
-  methods: 'GET,POST',
+  origin: '*',  // Allow all origins (for testing)
+  methods: 'GET,POST,DELETE',
 };
 app.use(cors(corsOptions));
 
 // Mount routes under '/api'
-app.use('/api/products', productRoutes);  // Correctly register product routes
-app.use('/api/auth', authRoutes);     // Mount auth routes under '/api'
-app.use('/api/orders', orderRoutes);    // Mount order routes under '/api'
+app.use('/api/products', productRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/orders', orderRoutes);
 
 const PORT = process.env.PORT || 3001;
 
