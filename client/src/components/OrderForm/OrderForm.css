@@ -1,60 +1,97 @@
 /* OrderForm.css */
 
 .order-form {
-    max-width: 400px;
-    margin: 20px auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    background-color: #f9f9f9;
+  max-width: 400px;
+  margin: 20px auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+
+.order-form label {
+  display: block;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+.order-form input {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #d8b4ed;
+  border-radius: 4px;
+}
+
+.order-form button {
+  margin-top: 15px;
+  padding: 10px;
+  width: 100%;
+  border: none;
+  border-radius: 4px;
+  background-color: #502c5e;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.order-form button:hover {
+  background-color:  #781a9a;
+}
+
+.order-form ul {
+  list-style: none;
+  padding: 0;
+}
+
+.order-form li {
+  background-color: #fff;
+  padding: 8px;
+  margin-top: 5px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+.error-message {
+  color: red;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+/* For Tablets (max-width: 768px) */
+@media (max-width: 768px) {
+  .order-form {
+      max-width: 350px;
+      padding: 15px;
   }
-  
-  .order-form label {
-    display: block;
-    margin-top: 10px;
-    font-weight: bold;
-  }
-  
-  .order-form input {
-    width: 100%;
-    padding: 8px;
-    margin-top: 5px;
-    border: 1px solid #d8b4ed;
-    border-radius: 4px;
-  }
-  
+
   .order-form button {
-    margin-top: 15px;
-    padding: 10px;
-    width: 100%;
-    border: none;
-    border-radius: 4px;
-    background-color: #502c5e;
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
+      font-size: 14px;
+      padding: 8px;
   }
-  
-  .order-form button:hover {
-    background-color:  #781a9a;
+}
+
+/* For Mobile Screens (max-width: 480px) */
+@media (max-width: 480px) {
+  .order-form {
+      max-width: 100%;
+      padding: 10px;
   }
-  
-  .order-form ul {
-    list-style: none;
-    padding: 0;
+
+  .order-form button {
+      font-size: 14px;
+      padding: 8px;
   }
-  
-  .order-form li {
-    background-color: #fff;
-    padding: 8px;
-    margin-top: 5px;
-    border-radius: 4px;
-    border: 1px solid #ddd;
+
+  .order-form label {
+      font-size: 14px;
   }
-  
+
+  .order-form input {
+      padding: 10px;
+  }
+
   .error-message {
-    color: red;
-    font-weight: bold;
-    margin-top: 10px;
+      font-size: 14px;
   }
-  
+}

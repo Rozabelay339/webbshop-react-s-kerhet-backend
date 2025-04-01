@@ -1,7 +1,12 @@
-import React from 'react';
-import ProductCard from '../ProductCard/ProductCard';
+import React from "react";
+import ProductCard from "../ProductCard/ProductCard";
+import './ProductList.css'
 
-function ProductList({ products }) {
+const ProductList = ({ products }) => {
+  if (!products.length) {
+    return <p>No products found.</p>;
+  }
+
   return (
     <div className="product-list">
       {products.map((product) => (
@@ -9,6 +14,6 @@ function ProductList({ products }) {
       ))}
     </div>
   );
-}
+};
 
 export default ProductList;

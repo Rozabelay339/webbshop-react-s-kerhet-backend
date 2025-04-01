@@ -1,5 +1,5 @@
-/* Login Form Styles */
-.login-form {
+/* Register Form Styles */
+.register-form {
     max-width: 400px;
     margin: 20px auto;
     padding: 20px;
@@ -8,13 +8,13 @@
     background-color: #f9f9f9;
 }
 
-.login-form label {
+.register-form label {
     display: block;
     margin-top: 10px;
     font-weight: bold;
 }
 
-.login-form input {
+.register-form input {
     width: 100%;
     padding: 8px;
     margin-top: 5px;
@@ -22,7 +22,7 @@
     border-radius: 4px;
 }
 
-.login-form button {
+.register-form button {
     margin-top: 15px;
     padding: 10px;
     width: 100%;
@@ -34,7 +34,7 @@
     cursor: pointer;
 }
 
-.login-form button:hover {
+.register-form button:hover {
     background-color: #781a9a;
 }
 
@@ -46,42 +46,42 @@
 
 /* For Tablets (max-width: 768px) */
 @media (max-width: 768px) {
-    .login-form {
+    .register-form {
         max-width: 350px;
         padding: 15px;
     }
 
-    .login-form button {
+    .register-form button {
         font-size: 14px;
         padding: 8px;
     }
 
-    .login-form input {
+    .register-form input {
         padding: 10px;
     }
 
-    .login-form label {
+    .register-form label {
         font-size: 14px;
     }
 }
 
 /* For Mobile Screens (max-width: 480px) */
 @media (max-width: 480px) {
-    .login-form {
+    .register-form {
         max-width: 100%;
         padding: 10px;
     }
 
-    .login-form button {
+    .register-form button {
         font-size: 14px;
         padding: 8px;
     }
 
-    .login-form input {
+    .register-form input {
         padding: 12px;
     }
 
-    .login-form label {
+    .register-form label {
         font-size: 14px;
     }
 

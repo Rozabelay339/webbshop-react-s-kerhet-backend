@@ -1,57 +1,111 @@
+/* Home Container */
 .home-container {
   text-align: center;
   padding: 30px;
+  position: relative;
+  background-image: url(./assets/image.jpg); /* Set the background image */
+  background-size: cover; /* Ensures the background image covers the entire container */
+  background-position: center center; /* Centers the image within the container */
+  background-repeat: no-repeat; /* Prevents the background image from repeating */
+  height: 85vh; /* Makes the container take up the full height of the viewport */
+  display: flex;
+  align-items: center; /* Vertically centers the content */
+  justify-content: center; /* Horizontally centers the content */
 }
 
 .home-container h1 {
-  font-size: 28px;
-  color: #1e1322;
-  margin-bottom: 20px;
+  font-size: 5rem;
+  color: #150f18;
+  margin: 0 auto;
+  padding-bottom: 10rem;
+  z-index: 1; /* Ensures the text is on top of the background image */
 }
 
-/* Product List */
-.product-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
-  padding: 20px;
+/* For Medium Screens (max-width: 1024px) */
+@media (max-width: 1024px) {
+  .home-container {
+    padding: 20px;
+    height: 70vh; /* Adjust height for medium screens */
+  }
+
+  .home-container h1 {
+    font-size: 4rem;
+    padding-bottom: 7rem;
+  }
 }
 
-.product-card {
-  background-color: white;
-  border: 1px solid #ddd;
-  padding: 15px;
+/* For Tablets (max-width: 768px) */
+@media (max-width: 768px) {
+  .home-container {
+    padding: 15px;
+    height: 60vh; /* Adjust height for tablets */
+  }
+
+  .home-container h1 {
+    font-size: 3rem;
+    padding-bottom: 5rem;
+  }
+}
+
+/* For Mobile Screens (max-width: 480px) */
+@media (max-width: 480px) {
+  .home-container {
+    padding: 10px;
+    height: 50vh; /* Adjust height for mobile */
+  }
+
+  .home-container h1 {
+    font-size: 2rem;
+    padding-bottom: 3rem;
+  }
+}
+
+
+h1 {
+  text-align: center; /* Centers the text horizontally */
+  font-size: 2rem; /* Adjust font size */
+  margin-top: 20px; /* Optional: Adds some space above */
+  margin-bottom: 20px; /* Optional: Adds some space below */
+  color: #310f39; /* You can adjust the color to match your theme */
+}
+
+/* Centering the entire LoginPage container horizontally */
+.login-page-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;  /* Centering left and right */
+  padding-top: 20px;  /* Adjust this value to add space from the navbar */
+}
+
+/* Centering the toggle form link button horizontally */
+.toggle-form-link {
+  margin-top: 20px;  /* Adds some space between the form and the button */
   text-align: center;
-  border-radius: 5px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease-in-out;
 }
 
-.product-card:hover {
-  transform: scale(1.05);
+.toggle-form-link p {
+  margin: 0;
 }
 
-/* Buttons */
-button {
-  background-color: #007bff;
-  color: white;
-  padding: 10px 15px;
+.toggle-form-link button {
+  background: none;
+  color: #502c5e;
   border: none;
-  border-radius: 5px;
+  font-size: 14px;
   cursor: pointer;
-  font-size: 16px;
-  transition: background 0.3s;
+  text-decoration: underline;
 }
 
-button:hover {
-  background-color: #0056b3;
+.toggle-form-link button:hover {
+  color: #781a9a;
 }
+
 
 /* Footer */
-footer {
+Footer {
   text-align: center;
   padding: 20px;
-  background-color: #333;
+  background-color: #18091c;
   color: white;
   position: fixed;
   bottom: 0;
