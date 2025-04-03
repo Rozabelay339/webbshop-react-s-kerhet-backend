@@ -1,22 +1,37 @@
-import './Search.css';
-import {useRef} from 'react';
+import React, { useState } from 'react';
+import './Search.css'; 
 
-//Denna komponent hanterar sökningen och skickar tillbaka ett sökvillkor.
-//Props värdet searchProducts är en pekare till en funktion i containern
-const Search = ({searchProducts}) => {
+const Search = ({ searchProducts }) => {
+  const [query, setQuery] = useState(""); 
+ 
+  const handleInputChange = (e) => {
+    setQuery(e.target.value);
+  };
 
-    const textVal = useRef();
-
-    
-        const handleClick = () => {
-        //Här anropas funktionen i containern
-        searchProducts(textVal.current.value);
+  const handleSearch = () => {
+    if (query.trim()) {
+      searchProducts(query); 
     }
+  };
 
-    return(<div id='search'>
-        <input type="text" ref={textVal} placeholder='sök på en kategori...'/>
-        <button onClick={handleClick}>Sök</button>
-    </div>)
-}
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
+  };
+
+  return (
+    <div className="search-container"> 
+      <input 
+        type="text" 
+        placeholder="Search by category..." 
+        value={query}
+        onChange={handleInputChange} 
+        onKeyDown={handleKeyDown}
+      />
+      <button onClick={handleSearch} disabled={!query.trim()}>Search</button>
+    </div>
+  );
+};
 
 export default Search;

@@ -1,6 +1,19 @@
 import React from 'react';
-import CheckoutComponent from '../components/Checkout/checkout'; // Renamed the import
+import { useAuth } from '../contexts/AuthContext';
 
-const CheckoutPage = () => <CheckoutComponent />;
+const Checkout = () => {
+  const { user } = useAuth();
 
-export default CheckoutPage;
+  if (!user) {
+    return <p>You need to log in to place an order.</p>;
+  }
+
+  return (
+    <div>
+      <h1>Checkout</h1>
+      <p>Proceed with your order</p>
+    </div>
+  );
+};
+
+export default Checkout;

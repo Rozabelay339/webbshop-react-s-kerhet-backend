@@ -1,18 +1,16 @@
 import mongoose from 'mongoose';
 
 const orderSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  address: { type: String, required: true },
+  userName: { type: String, required: true },
   items: [{
-    productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
-    quantity: { type: Number, required: true },
-    productPrice: { type: Number, required: true }
-  }]
-});
-
-// Virtual for calculating total amount
-orderSchema.virtual('totalAmount').get(function() {
-  return this.items.reduce((total, item) => total + (item.quantity * item.productPrice), 0);
+    name: { type: String, required: true },  
+    price: { type: Number, required: true }, 
+    size: { type: String, required: true },  
+    color: { type: String, required: true }, 
+    quantity: { type: Number, required: true }, 
+  }],
+  totalPrice: { type: Number, required: true },
+  orderDate: { type: Date, default: Date.now },
 });
 
 const Order = mongoose.model('Order', orderSchema);

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { UserService } from "../../services/ApiService";
-import { useAuth } from "../../contexts/AuthContext"; // Import the Auth context
+import { UserService } from "../../services/apiService"; 
+import { useAuth } from "../../contexts/AuthContext";
 import './Login.css';
 
 const Login = () => {
@@ -10,7 +10,7 @@ const Login = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { setUser } = useAuth(); // Access setUser to update the user context
+  const { setUser } = useAuth(); 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,12 +18,12 @@ const Login = () => {
     setLoading(true);
   
     try {
-      const { token, userData } = await UserService.loginUser(email, password); // Assume userData is returned from API
+      const { token, userData } = await UserService.loginUser(email, password); 
       localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(userData)); // Store user in localStorage
-      setUser(userData); // Set user data to context
-      console.log("User logged in:", userData); // Debugging: Check if user data is correct
-      navigate('/'); // Redirect to home page
+      localStorage.setItem('user', JSON.stringify(userData)); 
+      setUser(userData); 
+      console.log("User logged in:", userData);
+      navigate('/'); 
     } catch (err) {
       setError('Invalid credentials');
     } finally {

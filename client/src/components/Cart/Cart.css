@@ -1,6 +1,4 @@
-/* Cart.css */
 
-/* Basic styling for the cart container */
 .cart-container {
     max-width: 1200px;
     margin: 0 auto;
@@ -11,20 +9,18 @@
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   }
   
-  /* Heading for the cart section */
   .cart-container h2 {
     text-align: center;
     font-size: 2rem;
     color: #333;
     margin-bottom: 20px;
   }
-  
-  /* Cart item container */
+
   .cart-items {
     margin-top: 20px;
   }
   
-  /* Styling for each cart item */
+
   .cart-item {
     background-color: #fff;
     padding: 15px;
@@ -66,7 +62,7 @@
     background-color: #cab0ee;
   }
   
-  /* Clear Cart Button */
+
   .clear-cart-button {
     background-color: #cfc3e1;
     color: #555;

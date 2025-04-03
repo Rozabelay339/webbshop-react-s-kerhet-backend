@@ -1,4 +1,4 @@
-/* Login Form Styles */
+
 .login-form {
     max-width: 400px;
     margin: 20px auto;
@@ -65,7 +65,7 @@
     }
 }
 
-/* For Mobile Screens (max-width: 480px) */
+
 @media (max-width: 480px) {
     .login-form {
         max-width: 100%;

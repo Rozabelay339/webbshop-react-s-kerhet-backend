@@ -5,10 +5,10 @@
 }
 
 button:focus {
-  outline: 2px solid #000; /* Example outline when button is focused */
+  outline: 2px solid #000;
 }
 
 input:focus {
-  outline: 2px solid #000; /* Example outline when input is focused */
+  outline: 2px solid #000; 
 }
 

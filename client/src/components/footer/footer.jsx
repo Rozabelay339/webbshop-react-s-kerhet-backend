@@ -1,7 +1,7 @@
 
 const Footer = () => {
   return (
-    <footer>
+    <footer className='footer'>
       <p>&copy; 2025 TopStyle</p>
     </footer>
   );

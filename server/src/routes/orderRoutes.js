@@ -1,20 +1,13 @@
 import express from 'express';
-import {
-  createOrder,
-  getAllOrders,
-  getOrdersByUserName,
-  getOrderById,
-  deleteAllOrders,
-  deleteOrderById,
-} from '../controllers/orderController.js';
-
+import { createOrder, getAllOrders, getUserOrders, getOrderById, deleteAllOrders, deleteOrderById } from '../controllers/orderController.js';
+import { protect } from '../middleware/authMiddleware.js'; 
 const router = express.Router();
 
-router.post('/', createOrder);            // Create order
-router.get('/', getAllOrders);            // Get all orders
-router.get('/user/:name', getOrdersByUserName);  // Get orders by user name
-router.get('/:id', getOrderById);         // Get order by ID
-router.delete('/all', deleteAllOrders);   // Delete all orders
-router.delete('/:id', deleteOrderById);   // Delete order by ID
+router.post('/', protect, createOrder);          
+router.get('/', protect, getAllOrders);            
+router.get('/user/orders', protect, getUserOrders); 
+router.get('/:id', protect, getOrderById);         
+router.delete('/all', protect, deleteAllOrders);   
+router.delete('/:id', protect, deleteOrderById);   
 
 export default router;

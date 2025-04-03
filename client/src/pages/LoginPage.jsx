@@ -3,7 +3,7 @@ import Login from '../components/Login/Login';
 import Register from '../components/Register/Register';
 
 const LoginPage = () => {
-  const [isLogin, setIsLogin] = useState(true); // Toggle between login and register
+  const [isLogin, setIsLogin] = useState(true); 
 
   return (
     <div className="login-page-container">

@@ -1,121 +1,134 @@
+const BASE_URL = "http://localhost:3001/api";
+
+const handleResponse = async (response) => {
+  if (!response.ok) {
+    const errorMessage = await response.text();
+    throw new Error(errorMessage || `HTTP error! Status: ${response.status}`);
+  }
+
+  const contentType = response.headers.get("Content-Type");
+  if (contentType && contentType.includes("application/json")) {
+    return await response.json();
+  }
+  return null;
+};
+
 const ProductService = {
   getAllProducts: async () => {
-    const response = await fetch('http://localhost:3001/api/products');
-    const text = await response.text(); // Log the raw response body
-    console.log(text); // Log the response body
-    if (!response.ok) throw new Error('Failed to fetch products');
-    return JSON.parse(text); // Manually parse the text if necessary
+    const response = await fetch(`${BASE_URL}/products`);
+    return handleResponse(response);
   },
 
   getProductById: async (id) => {
-    const response = await fetch(`http://localhost:3001/api/products/${id}`);
-    const text = await response.text();
-    console.log(text);
-    if (!response.ok) throw new Error('Failed to fetch product');
-    return JSON.parse(text);
+    const response = await fetch(`${BASE_URL}/products/${id}`);
+    return handleResponse(response);
   },
-  
+
+  getProductByName: async (name) => {
+    const response = await fetch(`${BASE_URL}/products/name/${encodeURIComponent(name)}`);
+    return handleResponse(response);
+  },
+
   createProduct: async (productData) => {
-    const response = await fetch('http://localhost:3001/api/products', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+    const response = await fetch(`${BASE_URL}/products`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(productData),
     });
+    return handleResponse(response);
+  },
 
-    if (!response.ok) throw new Error('Failed to create product');
-    return await response.json();
+  // Add this function to fetch products by category
+  getProductsByCategory: async (category) => {
+    const response = await fetch(`${BASE_URL}/products/category/${encodeURIComponent(category)}`);
+    return handleResponse(response);
   },
 };
 
+
 const UserService = {
   registerUser: async (userData) => {
-    const response = await fetch('http://localhost:3001/api/auth/register', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+    const response = await fetch(`${BASE_URL}/auth/register`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(userData),
     });
-
-    if (!response.ok) throw new Error('Failed to register user');
-    return await response.json();
+    return handleResponse(response);
   },
 
   loginUser: async (email, password) => {
-    const response = await fetch("http://localhost:3001/api/auth/login", {
+    const response = await fetch(`${BASE_URL}/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
     });
 
-    const data = await response.json();
-    console.log("Login Response:", data); // Debugging
-
-    if (!response.ok) throw new Error(data.message || "Login failed");
-
+    const data = await handleResponse(response);
     return { token: data.token, userData: { id: data._id, name: data.name, email: data.email } };
   },
 };
 
 const OrderService = {
-  createOrder: async (orderData) => {
-    try {
-      const response = await fetch('http://localhost:3001/api/orders', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(orderData),
-      });
-
-      if (!response.ok) {
-        const errorResponse = await response.json();
-        throw new Error(errorResponse.message || 'Failed to create order');
-      }
-
-      return await response.json();
-    } catch (err) {
-      console.error('Error:', err);
-      throw err;
-    }
-  },
-
-  getAllOrders: async () => {
-    const response = await fetch('http://localhost:3001/api/orders');
-    if (!response.ok) throw new Error('Failed to fetch orders');
-    return await response.json();
-  },
-
-  getOrdersByUserName: async (userName) => {
-    const response = await fetch(`http://localhost:3001/api/orders/user/${encodeURIComponent(userName)}`);
-    if (!response.ok) throw new Error('Failed to fetch orders');
-    return await response.json();
-  },
-
-  getOrderById: async (orderId) => {
-    const response = await fetch(`http://localhost:3001/api/orders/${orderId}`);
-    if (!response.ok) throw new Error('Failed to fetch order');
-    return await response.json();
-  },
-
-  deleteAllOrders: async () => {
-    const response = await fetch('http://localhost:3001/api/orders/all', {
-      method: 'DELETE',
+  createOrder: async (orderData, token) => {
+    const response = await fetch(`${BASE_URL}/orders`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(orderData),
     });
-    if (!response.ok) throw new Error('Failed to delete all orders');
-    return await response.json();
+    return handleResponse(response);
   },
 
-  deleteOrderById: async (orderId) => {
-    const response = await fetch(`http://localhost:3001/api/orders/${orderId}`, {
-      method: 'DELETE',
+  getAllOrders: async (token) => {
+    const response = await fetch(`${BASE_URL}/orders`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
     });
-    if (!response.ok) throw new Error('Failed to delete order');
-    return await response.json();
+    return handleResponse(response);
+  },
+
+  getOrdersByUserId: async (userId, token) => {
+    const response = await fetch(`${BASE_URL}/orders/user/${userId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return handleResponse(response);
+  },
+
+  getOrderById: async (orderId, token) => {
+    const response = await fetch(`${BASE_URL}/orders/${orderId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return handleResponse(response);
+  },
+
+  deleteAllOrders: async (token) => {
+    const response = await fetch(`${BASE_URL}/orders/all`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return handleResponse(response);
+  },
+
+  deleteOrderById: async (orderId, token) => {
+    const response = await fetch(`${BASE_URL}/orders/${orderId}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return handleResponse(response);
   },
 };
-
 
 export { ProductService, UserService, OrderService };

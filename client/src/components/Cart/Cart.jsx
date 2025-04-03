@@ -1,87 +1,68 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useCart } from "../../contexts/CartContext";
-import { useAuth } from "../../contexts/AuthContext";
-import { OrderService } from "../../services/ApiService";
-import './Cart.css'
+import { OrderService } from "../../services/apiService";
+import "./Cart.css";  
 
-function Cart() {
-  const { cartItems, removeFromCart, clearCart, addToCart } = useCart();
-  const { user } = useAuth();
-  const [orders, setOrders] = useState([]);
+const Cart = () => {
+  const { cartItems, clearCart, removeOneFromCart } = useCart();
 
-  useEffect(() => {
-    if (user) {
-      fetchOrders();
-    }
-  }, [user]);
+  const calculateTotal = () => {
+    console.log("Current cart items:", cartItems);
+    return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+  };
 
-  const fetchOrders = async () => {
+  const handleCheckout = async () => {
     try {
-      const userOrders = await OrderService.getOrdersByUserName(user?.name);
-      setOrders(userOrders);
+      const orderData = {
+        items: cartItems.map((item) => ({
+          name: item.name,
+          price: item.price,
+          quantity: item.quantity,
+        })),
+      };
+
+      console.log("Order being sent:", orderData); 
+
+      const orderResponse = await OrderService.createOrder(orderData);
+      alert("Order placed successfully");
+      clearCart();
     } catch (error) {
-      console.error("Failed to fetch orders:", error);
+      alert("Error placing order: " + error.message);
     }
-  };
-
-  const handleRemove = (item) => {
-    console.log("Removing from cart:", item);
-    removeFromCart(item._id);
-  };
-
-  const handleAdd = (item) => {
-    console.log("Adding to cart:", item);
-    addToCart(item);
   };
 
   return (
     <div className="cart-container">
-    <h2>{user?.name ? `${user.name}'s Cart` : 'Your Cart'}</h2>
-  
-    {cartItems.length === 0 ? (
-      <p>Your cart is empty.</p>
-    ) : (
-      <div className="cart-items">
-        {cartItems.map((item) => (
-          <div key={item.productId} className="cart-item">
-            <p>{item.name} - ${item.price} x {item.quantity}</p>
-            <div>
-              <button className="remove" onClick={() => handleRemove(item)}>Remove</button>
-              <button onClick={() => handleAdd(item)}>Add One More</button>
-            </div>
-          </div>
-        ))}
-      </div>
-    )}
-  
-    {cartItems.length > 0 && <button className="clear-cart-button" onClick={clearCart}>Clear Cart</button>}
-  
-    {/* Display User Orders */}
-    <div className="order-section">
-      <h3>Your Previous Orders</h3>
-      {orders.length === 0 ? (
-        <p>You have no previous orders.</p>
+      <h2>Your Cart</h2>
+      {cartItems.length === 0 ? (
+        <p>Your cart is empty</p>
       ) : (
-        orders.map((order) => (
-          <div key={order._id} className="order-item">
-            <h4>Order ID: {order._id}</h4>
-            <p>Ordered by: {order.name}</p>
-            <p>Address: {order.address || "Not provided"}</p>
-            <p>Ordered on: {new Date(order.createdAt).toLocaleDateString()}</p>
-            <ul>
-              {order.items.map((item, index) => (
-                <li key={index}>
-                  {item.productName} - ${item.productPrice} x {item.quantity}
-                </li>
-              ))}
-            </ul>
+        <div className="cart-items">
+          <ul>
+            {cartItems.map((item, index) => (
+              <li key={index} className="cart-item">
+                <div className="cart-item-details">
+                  <span className="cart-item-name">{item.name}</span>
+                  <span className="cart-item-quantity"> x {item.quantity}</span>
+                  <span className="cart-item-price"> ${item.price}</span>
+                </div>
+                <div className="cart-item-actions">
+                  <button onClick={() => removeOneFromCart(item.productId)} className="remove">
+                    Remove
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+          <div className="order-section">
+            <p><strong>Total:</strong> ${calculateTotal().toFixed(2)}</p>
+            <button onClick={handleCheckout} className="checkout-button">Proceed to Checkout</button>
+            <button onClick={clearCart} className="clear-cart-button">Clear Cart</button>
           </div>
-        ))
+        </div>
       )}
     </div>
-  </div>
-  
   );
-}
+};
 
 export default Cart;

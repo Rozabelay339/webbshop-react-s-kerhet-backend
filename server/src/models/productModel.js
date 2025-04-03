@@ -5,9 +5,12 @@ const productSchema = new mongoose.Schema({
   price: { type: Number, required: true },
   description: { type: String },
   image: { type: String },
-  category: { type: String } // Make sure 'category' field is included
+  category: { type: String, required: true },
+  size: { type: String, required: true },
+  color: { type: String, required: true },
+  quantity: { type: Number, required: true },
 });
 
-const Product = mongoose.model('Product', productSchema);
+const Product = mongoose.models.Product || mongoose.model('Product', productSchema);
 
 export default Product;

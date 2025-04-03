@@ -1,16 +1,21 @@
-/* Home Container */
+* { 
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
 .home-container {
   text-align: center;
   padding: 30px;
   position: relative;
-  background-image: url(./assets/image.jpg); /* Set the background image */
-  background-size: cover; /* Ensures the background image covers the entire container */
-  background-position: center center; /* Centers the image within the container */
-  background-repeat: no-repeat; /* Prevents the background image from repeating */
-  height: 85vh; /* Makes the container take up the full height of the viewport */
+  background-image: url(./assets/image.jpg); 
+  background-size: cover; 
+  background-position: center center; 
+  background-repeat: no-repeat; 
+  height: 85vh; 
   display: flex;
-  align-items: center; /* Vertically centers the content */
-  justify-content: center; /* Horizontally centers the content */
+  align-items: center; 
+  justify-content: center; 
 }
 
 .home-container h1 {
@@ -18,14 +23,14 @@
   color: #150f18;
   margin: 0 auto;
   padding-bottom: 10rem;
-  z-index: 1; /* Ensures the text is on top of the background image */
+  z-index: 1; 
 }
 
-/* For Medium Screens (max-width: 1024px) */
+
 @media (max-width: 1024px) {
   .home-container {
     padding: 20px;
-    height: 70vh; /* Adjust height for medium screens */
+    height: 70vh;
   }
 
   .home-container h1 {
@@ -34,11 +39,11 @@
   }
 }
 
-/* For Tablets (max-width: 768px) */
+
 @media (max-width: 768px) {
   .home-container {
     padding: 15px;
-    height: 60vh; /* Adjust height for tablets */
+    height: 60vh; 
   }
 
   .home-container h1 {
@@ -47,11 +52,11 @@
   }
 }
 
-/* For Mobile Screens (max-width: 480px) */
+
 @media (max-width: 480px) {
   .home-container {
     padding: 10px;
-    height: 50vh; /* Adjust height for mobile */
+    height: 50vh; 
   }
 
   .home-container h1 {
@@ -62,24 +67,24 @@
 
 
 h1 {
-  text-align: center; /* Centers the text horizontally */
-  font-size: 2rem; /* Adjust font size */
-  margin-top: 20px; /* Optional: Adds some space above */
-  margin-bottom: 20px; /* Optional: Adds some space below */
-  color: #310f39; /* You can adjust the color to match your theme */
+  text-align: center; 
+  font-size: 2rem; 
+  margin-top: 20px; 
+  margin-bottom: 20px; 
+  color: #310f39; 
 }
 
-/* Centering the entire LoginPage container horizontally */
+
 .login-page-container {
   display: flex;
   flex-direction: column;
-  align-items: center;  /* Centering left and right */
-  padding-top: 20px;  /* Adjust this value to add space from the navbar */
+  align-items: center;  
+  padding-top: 20px;  
 }
 
-/* Centering the toggle form link button horizontally */
+
 .toggle-form-link {
-  margin-top: 20px;  /* Adds some space between the form and the button */
+  margin-top: 20px;  
   text-align: center;
 }
 

@@ -1,0 +1,192 @@
+
+.product-detail {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+}
+
+.product-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.product-info {
+  text-align: center;
+  max-width: 800px;
+  margin-top: 20px;
+}
+
+.product-info h2 {
+  font-size: 2rem;
+  color: #333;
+  margin: 10px 0;
+}
+
+.product-price {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #cfc3e1;
+  margin: 10px 0;
+}
+
+.product-description {
+  font-size: 1rem;
+  color: #555;
+  margin: 20px 0;
+}
+
+.product-options {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+  gap: 30px;
+}
+
+.size-selector,
+.color-selector {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.size-selector select,
+.color-selector select {
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  outline: none;
+  cursor: pointer;
+}
+
+.size-selector select:hover,
+.color-selector select:hover {
+  border-color: #cfc3e1;
+}
+
+.delivery-info {
+  margin-top: 20px;
+  text-align: left;
+  font-size: 1rem;
+  color: #444;
+}
+
+.delivery-info h3 {
+  font-size: 1.25rem;
+  color: #333;
+}
+
+.delivery-info p {
+  margin: 5px 0;
+}
+
+.free-delivery {
+  font-weight: bold;
+  color: #388e3c;
+}
+
+.resale-option {
+  color: #3f51b5;
+  font-weight: bold;
+}
+
+/* Order Button */
+.order-button {
+  padding: 12px 30px;
+  background-color: #cfc3e1;
+  color: #555;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: background-color 0.3s ease;
+}
+
+.order-button:hover {
+  background-color: #cab0ee;
+}
+
+/* Login Message */
+.login-message {
+  margin-top: 20px;
+  color: #e91e63;
+  font-size: 1rem;
+}
+
+/* Order Status */
+.order-status {
+  margin-top: 20px;
+  font-size: 1rem;
+  color: #388e3c;
+}
+
+/* Error Message */
+.error-message {
+  background-color: #ffebee;
+  color: #d32f2f;
+  padding: 15px;
+  border-radius: 8px;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.error-message button {
+  padding: 10px 20px;
+  background-color: #d32f2f;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.error-message button:hover {
+  background-color: #b71c1c;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .product-detail {
+    padding: 15px;
+  }
+
+  .product-options {
+    flex-direction: column;
+  }
+
+  .product-info h2 {
+    font-size: 1.5rem;
+  }
+
+  .product-price {
+    font-size: 1.3rem;
+  }
+
+  .product-description {
+    font-size: 0.9rem;
+  }
+
+  
+
+  .order-button {
+    width: 100%;
+  }
+}
+
+.product-image {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
