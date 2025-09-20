@@ -61,37 +61,37 @@ export const getProductsByCategory = async (req, res) => {
 export const createProduct = async (req, res) => {
   console.log("Request Body:", req.body);
 
-  let items = req.body.items || req.body; // Support both array and single object
-
+  let items = req.body.items || req.body; // stöd för både array och single object
   if (!Array.isArray(items)) {
-    items = [items]; // Convert single object to an array
+    items = [items]; // om det bara är ett objekt
   }
 
   if (!items || items.length === 0) {
-    return res.status(400).json({ error: "Items array is required" });
+    return res.status(400).json({ error: "At least one product is required" });
   }
 
   try {
     const createdProducts = [];
-
     for (const item of items) {
       console.log("Processing item:", item);
 
-      const { name, category, size, color, quantity, price } = item;
+      const { name, category, sizes, colors, quantity, price, description, image } = item;
 
-      if (!name || !category || !size || !color || !quantity || price === undefined) {
-        return res.status(400).json({ error: "All fields are required for each product, including price" });
+      if (!name || !category || !quantity || price === undefined) {
+        return res.status(400).json({
+          error: "Fields 'name', 'category', 'quantity' and 'price' are required"
+        });
       }
 
       const newProduct = new Product({
         name,
         category,
-        size,
-        color,
+        sizes: sizes || [],
+        colors: colors || [],
         quantity,
         price,
-        description: "",
-        image: "",
+        description: description || "",
+        image: image || ""
       });
 
       await newProduct.save();
@@ -101,7 +101,8 @@ export const createProduct = async (req, res) => {
     res.status(201).json(createdProducts.length === 1 ? createdProducts[0] : createdProducts);
   } catch (error) {
     console.error("Error saving product:", error);
-    res.status(500).json({ error: "Error creating products" });
+    res.status(500).json({ error: "Error creating product(s)" });
   }
 };
+
 
