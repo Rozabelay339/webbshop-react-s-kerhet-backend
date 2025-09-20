@@ -6,40 +6,37 @@ import { ProductService } from "../services/apiService";
 const Product = () => {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const data = await ProductService.getAllProducts(); 
+        const data = await ProductService.getAllProducts();
         setProducts(data);
-        setFilteredProducts(data); 
+        setFilteredProducts(data);
       } catch (error) {
-        console.error("Failed to fetch products:", error);
+        console.error(error);
       }
     };
     fetchProducts();
-  }, []); 
+  }, []);
 
-  
-  const searchProducts = (query) => {
-    if (!query.trim()) {
-      setFilteredProducts(products); 
-      return;
-    }
+  useEffect(() => {
+    if (!searchTerm.trim()) return setFilteredProducts(products);
 
-    const filtered = products.filter((product) =>
-      product.category.toLowerCase().includes(query.toLowerCase()) ||
-      product.name.toLowerCase().includes(query.toLowerCase()) 
+    const keywords = searchTerm.toLowerCase().split(" ");
+    setFilteredProducts(
+      products.filter(product =>
+        keywords.some(kw => product.name.toLowerCase().includes(kw) || product.category.toLowerCase().includes(kw))
+      )
     );
-
-    setFilteredProducts(filtered);
-  };
+  }, [searchTerm, products]);
 
   return (
     <div>
-      <Search searchProducts={searchProducts} /> 
+      <Search searchProducts={setSearchTerm} />
       <h1>All Products</h1>
-      <ProductList products={filteredProducts} /> 
+      <ProductList products={filteredProducts} />
     </div>
   );
 };

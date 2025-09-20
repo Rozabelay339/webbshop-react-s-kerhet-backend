@@ -1,11 +1,13 @@
 .footer {
-    text-align: center;
-    padding: 20px;
-    background-color: #18091c;
-    color: white;
-    width: 100%;
-    position: fixed;
-    bottom: 0; /* Ensures the footer is always at the bottom */
-    left: 0; /* Aligns it to the left edge */
-  }
-  
+  background: #222;
+  color: #fff;
+  text-align: center;
+  padding: 1.5rem;
+  font-size: 0.9rem;
+  margin-top: 3rem;
+}
+
+.footer strong {
+  color: #cdb8db;
+  font-size: medium;
+}

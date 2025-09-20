@@ -10,6 +10,8 @@ import Cart from './components/Cart/Cart';
 import Navbar from './components/Navbar/Navbar';
 import Footer from './components/footer/footer';
 import ProductDetail from './pages/ProductDetail';
+import About from './pages/About'; 
+import Profile from './pages/Profile';
 import './App.css';
 
 function App() {
@@ -26,6 +28,8 @@ function App() {
               <Route path="/login" element={<LoginPage />} />
               <Route path="/checkout" element={<Checkout />} />  
               <Route path="/cart" element={<Cart />} />
+              <Route path="/about" element={<About />} /> 
+              <Route path="/profile" element={<Profile />} />
             </Routes>
           </div>
           <Footer />

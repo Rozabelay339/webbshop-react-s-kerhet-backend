@@ -48,7 +48,7 @@ const ProductService = {
 
 const UserService = {
   registerUser: async (userData) => {
-    const response = await fetch(`${BASE_URL}/auth/register`, {
+    const response = await fetch(`${BASE_URL}/users/register`, {  // ✅ changed 'auth' → 'users'
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(userData),
@@ -57,7 +57,7 @@ const UserService = {
   },
 
   loginUser: async (email, password) => {
-    const response = await fetch(`${BASE_URL}/auth/login`, {
+    const response = await fetch(`${BASE_URL}/users/login`, {  // ✅ changed 'auth' → 'users'
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
@@ -67,6 +67,7 @@ const UserService = {
     return { token: data.token, userData: { id: data._id, name: data.name, email: data.email } };
   },
 };
+
 
 const OrderService = {
   createOrder: async (orderData, token) => {
