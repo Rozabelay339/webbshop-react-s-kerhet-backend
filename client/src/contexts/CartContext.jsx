@@ -7,74 +7,52 @@ export const CartProvider = ({ children }) => {
   const { user } = useAuth();
   const [cartItems, setCartItems] = useState([]);
 
-  // Load cart for current user
+  // Load cart from localStorage when user changes
   useEffect(() => {
-    if (user) {
-      const savedCart = localStorage.getItem(`cart_${user.id}`);
-      setCartItems(savedCart ? JSON.parse(savedCart) : []);
-    } else {
-      setCartItems([]);
-    }
+    if (!user) return setCartItems([]);
+    const savedCart = localStorage.getItem(`cart_${user.id}`);
+    setCartItems(savedCart ? JSON.parse(savedCart) : []);
   }, [user]);
 
-  // Save cart whenever it changes
   useEffect(() => {
     if (user) {
       localStorage.setItem(`cart_${user.id}`, JSON.stringify(cartItems));
     }
   }, [cartItems, user]);
 
-  const addToCart = (product) => {
-    const index = cartItems.findIndex((item) => item.productId === product._id);
-    if (index >= 0) {
-      const updatedCart = [...cartItems];
-      updatedCart[index].quantity += 1;
-      setCartItems(updatedCart);
-    } else {
-      setCartItems([...cartItems, { ...product, productId: product._id, quantity: 1 }]);
-    }
-  };
-
-  const removeOneFromCart = (productId) => {
-    const updatedCart = cartItems
-      .map((item) =>
-        item.productId === productId && item.quantity > 1
-          ? { ...item, quantity: item.quantity - 1 }
-          : item
-      )
-      .filter((item) => item.quantity > 0);
-    setCartItems(updatedCart);
-  };
-
-  const removeFromCart = (productId) => {
-    setCartItems(cartItems.filter((item) => item.productId !== productId));
-  };
-
-  const incrementQuantity = (productId) => {
-    setCartItems(
-      cartItems.map(item =>
-        item.productId === productId
-          ? { ...item, quantity: item.quantity + 1 }
-          : item
-      )
-    );
-  };
-
-  const decrementQuantity = (productId) => {
-    setCartItems(
-      cartItems
+  const updateQuantity = (productId, change) => {
+    setCartItems(prev =>
+      prev
         .map(item =>
           item.productId === productId
-            ? { ...item, quantity: item.quantity - 1 }
+            ? { ...item, quantity: item.quantity + change }
             : item
         )
         .filter(item => item.quantity > 0)
     );
   };
 
+  const addToCart = (product) => {
+    setCartItems(prev => {
+      const existing = prev.find(item => item.productId === product._id);
+      if (existing) {
+        return prev.map(item =>
+          item.productId === product._id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        );
+      }
+      return [...prev, { ...product, productId: product._id, quantity: 1 }];
+    });
+  };
+
+  const removeFromCart = (productId) => {
+    setCartItems(prev => prev.filter(item => item.productId !== productId));
+  };
+
   const clearCart = () => {
     setCartItems([]);
-    if (user) localStorage.setItem(`cart_${user.id}`, JSON.stringify([]));
+    if (user) localStorage.removeItem(`cart_${user.id}`);
   };
 
   return (
@@ -82,10 +60,9 @@ export const CartProvider = ({ children }) => {
       value={{
         cartItems,
         addToCart,
-        removeOneFromCart,
         removeFromCart,
-        incrementQuantity,
-        decrementQuantity,
+        incrementQuantity: (id) => updateQuantity(id, 1),
+        decrementQuantity: (id) => updateQuantity(id, -1),
         clearCart
       }}
     >

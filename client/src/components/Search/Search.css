@@ -1,4 +1,4 @@
-.search-container {  /* ✅ Change from #search to .search-container */
+.search-container {  
   display: flex;
   justify-content: center;
   align-items: center;

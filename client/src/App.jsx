@@ -8,7 +8,7 @@ import LoginPage from './pages/LoginPage';
 import Checkout from './pages/Checkout'; 
 import Cart from './components/Cart/Cart';
 import Navbar from './components/Navbar/Navbar';
-import Footer from './components/footer/footer';
+import Footer from './components/Footer/Footer';
 import ProductDetail from './pages/ProductDetail';
 import About from './pages/About'; 
 import Profile from './pages/Profile';

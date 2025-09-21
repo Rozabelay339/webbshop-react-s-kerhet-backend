@@ -101,7 +101,6 @@
   font-weight: bold;
 }
 
-/* Order Button */
 .order-button {
   padding: 12px 30px;
   background-color: #cfc3e1;
@@ -118,21 +117,18 @@
   background-color: #cab0ee;
 }
 
-/* Login Message */
 .login-message {
   margin-top: 20px;
   color: #e91e63;
   font-size: 1rem;
 }
 
-/* Order Status */
 .order-status {
   margin-top: 20px;
   font-size: 1rem;
   color: #388e3c;
 }
 
-/* Error Message */
 .error-message {
   background-color: #ffebee;
   color: #d32f2f;
@@ -155,7 +151,6 @@
   background-color: #b71c1c;
 }
 
-/* Responsive design */
 @media (max-width: 768px) {
   .product-detail {
     padding: 15px;
