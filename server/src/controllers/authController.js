@@ -1,112 +1,77 @@
-import User from '../models/userModel.js';
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
-import mongoose from 'mongoose';  // Import mongoose
+import React, { createContext, useContext, useState, useEffect } from "react";
+import { jwtDecode } from "jwt-decode";
+import axios from "axios";
 
+export const AuthContext = createContext();
+export const useAuth = () => useContext(AuthContext);
 
-// Function to generate a JWT token
-const generateToken = (id) => {
-  const secretKey = process.env.JWT_SECRET;
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
+  const [loading, setLoading] = useState(true);
+  let logoutTimer = null;
 
-  if (!secretKey) {
-    throw new Error('JWT_SECRET is missing in environment variables');
-  }
-
-  return jwt.sign({ id }, secretKey, {
-    expiresIn: '30d', // Token expiration time (30 days)
-  });
-};
-
-// Register a new user
-const registerUser = async (req, res) => {
-  const { name, email, password } = req.body;
-
-  try {
-    // Check if user exists
-    const userExists = await User.findOne({ email });
-    if (userExists) {
-      return res.status(400).json({ message: 'User already exists' });
+  useEffect(() => {
+    const savedUser = localStorage.getItem("user");
+    const savedToken = localStorage.getItem("token");
+    if (savedUser && savedToken) {
+      setUser(JSON.parse(savedUser));
+      setToken(savedToken);
+      axios.defaults.headers.common["Authorization"] = `Bearer ${savedToken}`;
+      scheduleAutoLogout(savedToken);
     }
+    setLoading(false);
 
-    // Hash password
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+    return () => {
+      if (logoutTimer) clearTimeout(logoutTimer);
+    };
+  }, []);
 
-    // Create new user
-    const user = await User.create({
-      name,
-      email,
-      password: hashedPassword,
-    });
+  useEffect(() => {
+    if (user) localStorage.setItem("user", JSON.stringify(user));
+    else localStorage.removeItem("user");
+  }, [user]);
 
-    if (user) {
-      res.status(201).json({
-        _id: user.id,
-        name: user.name,
-        email: user.email,
-        token: generateToken(user.id), // Generate JWT token
-      });
+  useEffect(() => {
+    if (token) {
+      localStorage.setItem("token", token);
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
     } else {
-      res.status(400).json({ message: 'Invalid user data' });
+      localStorage.removeItem("token");
+      delete axios.defaults.headers.common["Authorization"];
     }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
+  }, [token]);
+
+  function scheduleAutoLogout(jwt) {
+    try {
+      const { exp } = jwtDecode(jwt);
+      const ms = exp * 1000 - Date.now();
+      if (ms <= 0) {
+        handleLogout();
+      } else {
+        logoutTimer = setTimeout(() => handleLogout(), ms);
+      }
+    } catch (e) {
+      // invalid token
+    }
   }
+
+  const handleLogin = ({ user, token }) => {
+    setUser(user);
+    setToken(token);
+    scheduleAutoLogout(token);
+  };
+
+  const handleLogout = () => {
+    setUser(null);
+    setToken(null);
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+  };
+
+  return (
+    <AuthContext.Provider value={{ user, token, loading, setUser: handleLogin, logout: handleLogout }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
-
-// Login user
-const loginUser = async (req, res) => {
-  const { email, password } = req.body;
-
-  try {
-    // Find the user by email
-    const user = await User.findOne({ email });
-
-    if (user && (await bcrypt.compare(password, user.password))) {
-      res.json({
-        _id: user.id,
-        name: user.name,
-        email: user.email,
-        token: generateToken(user.id), // Generate JWT token
-      });
-    } else {
-      res.status(401).json({ message: 'Invalid email or password' });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
-};
-
-// Get user profile (protected route)
-const getUserProfile = async (req, res) => {
-  try {
-    console.log("Decoded user object:", req.user); // Debugging
-
-    if (!req.user || !req.user.id) {
-      return res.status(400).json({ message: "Invalid token: No user ID found" });
-    }
-
-    // Convert to ObjectId if necessary
-    const userId = new mongoose.Types.ObjectId(req.user.id);
-
-    // Find user by ID
-    const user = await User.findById(userId).select("-password"); // Exclude password field
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    res.json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-    });
-  } catch (error) {
-    console.error("Error fetching user profile:", error.message);
-    res.status(500).json({ message: "Server error" });
-  }
-};
-
-export { registerUser, loginUser, getUserProfile };

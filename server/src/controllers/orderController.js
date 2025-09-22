@@ -1,7 +1,6 @@
 import Order from '../models/orderModel.js';
 import Product from '../models/productModel.js';
 
-// Create a new order
 export const createOrder = async (req, res) => {
   try {
     const { items } = req.body;
@@ -40,8 +39,6 @@ export const createOrder = async (req, res) => {
     res.status(500).json({ error: "Failed to create order" });
   }
 };
-
-// Get all orders (admin)
 export const getAllOrders = async (req, res) => {
   try {
     const orders = await Order.find();
@@ -49,7 +46,6 @@ export const getAllOrders = async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 };
 
-// Get orders for logged-in user
 export const getUserOrders = async (req, res) => {
   try {
     const orders = await Order.find({ userId: req.user.id });
@@ -57,7 +53,7 @@ export const getUserOrders = async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 };
 
-// Get single order by ID
+
 export const getOrderById = async (req, res) => {
   try {
     const order = await Order.findById(req.params.id);
@@ -66,7 +62,7 @@ export const getOrderById = async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 };
 
-// Delete single order by ID (admin)
+
 export const deleteOrderById = async (req, res) => {
   try {
     const order = await Order.findByIdAndDelete(req.params.id);
@@ -75,7 +71,6 @@ export const deleteOrderById = async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 };
 
-// Delete all orders (admin)
 export const deleteAllOrders = async (req, res) => {
   try {
     await Order.deleteMany();
