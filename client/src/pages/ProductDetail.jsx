@@ -9,7 +9,7 @@ import './ProductDetail.css';
 
 const ProductDetail = () => {
   const { id } = useParams();
-  const { user } = useAuth();
+  const { user, token, loading: authLoading } = useAuth();
   const { addToCart } = useCart();
 
   const [product, setProduct] = useState(null);
@@ -46,9 +46,9 @@ const ProductDetail = () => {
     if (product.colors?.length && !selectedColor) return setOrderStatus("Select a color.");
 
     try {
-      const token = localStorage.getItem("token");
       const orderData = {
         items: [{
+          productId: product._id,
           name: product.name,
           category: product.category,
           quantity,
@@ -56,7 +56,7 @@ const ProductDetail = () => {
           color: selectedColor || "Default",
         }]
       };
-      await OrderService.createOrder(orderData, token);
+      await OrderService.createOrder(orderData, token || localStorage.getItem("token"));
       addToCart({ ...product, size: selectedSize, color: selectedColor, quantity });
       setOrderStatus("Order placed successfully!");
     } catch {
@@ -122,7 +122,9 @@ const ProductDetail = () => {
           />
         </div>
 
-        {user ? (
+        {authLoading ? (
+          <p>Checking login status...</p>
+        ) : user ? (
           <button
             className="order-button"
             onClick={handleOrder}

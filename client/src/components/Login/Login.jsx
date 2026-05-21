@@ -10,7 +10,7 @@ const Login = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { setUser } = useAuth();
+  const { login } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,11 +18,9 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const { token, userData } = await UserService.loginUser(email, password);
-      localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(userData));
-      setUser(userData);
-      navigate('/');
+      const session = await UserService.loginUser(email, password);
+      login(session);
+      navigate('/products');
     } catch {
       setError('Invalid credentials');
     } finally {

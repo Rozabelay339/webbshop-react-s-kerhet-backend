@@ -1,5 +1,7 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { UserService } from "../../services/apiService";
+import { useAuth } from "../../contexts/AuthContext";
 import './Register.css';
 
 const Register = () => {
@@ -8,6 +10,8 @@ const Register = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -15,9 +19,10 @@ const Register = () => {
     setLoading(true);
 
     try {
-      await UserService.registerUser({ name, email, password });
-      alert('Registration successful!');
+      const session = await UserService.registerUser({ name, email, password });
+      login(session);
       setName(''); setEmail(''); setPassword('');
+      navigate('/products');
     } catch (err) {
       setError('Registration failed: ' + err.message);
     } finally {

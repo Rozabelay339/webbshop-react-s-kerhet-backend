@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useCallback, useContext, useState, useEffect, useRef } from "react";
 import { jwtDecode } from "jwt-decode"; 
 import axios from "axios";
 
@@ -9,14 +9,40 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
-  let logoutTimer = null;
+  const logoutTimer = useRef(null);
+
+  const handleLogout = useCallback(() => {
+    if (logoutTimer.current) clearTimeout(logoutTimer.current);
+    setUser(null);
+    setToken(null);
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+  }, []);
+
+  const scheduleAutoLogout = useCallback((jwt) => {
+    try {
+      const { exp } = jwtDecode(jwt);
+      const ms = exp * 1000 - Date.now();
+      if (ms <= 0) {
+        handleLogout();
+      } else {
+        if (logoutTimer.current) clearTimeout(logoutTimer.current);
+        logoutTimer.current = setTimeout(() => handleLogout(), ms);
+      }
+    } catch {
+      handleLogout();
+    }
+  }, [handleLogout]);
 
   useEffect(() => {
-  
     const savedUser = localStorage.getItem("user");
     const savedToken = localStorage.getItem("token");
     if (savedUser && savedToken) {
-      setUser(JSON.parse(savedUser));
+      try {
+        setUser(JSON.parse(savedUser));
+      } catch {
+        localStorage.removeItem("user");
+      }
       setToken(savedToken);
       axios.defaults.headers.common["Authorization"] = `Bearer ${savedToken}`;
       scheduleAutoLogout(savedToken);
@@ -24,9 +50,9 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
 
     return () => {
-      if (logoutTimer) clearTimeout(logoutTimer);
+      if (logoutTimer.current) clearTimeout(logoutTimer.current);
     };
-  }, []);
+  }, [scheduleAutoLogout]);
 
   useEffect(() => {
     if (user) localStorage.setItem("user", JSON.stringify(user));
@@ -43,35 +69,17 @@ export const AuthProvider = ({ children }) => {
     }
   }, [token]);
 
-  function scheduleAutoLogout(jwt) {
-    try {
-      const { exp } = jwtDecode(jwt);
-      const ms = exp * 1000 - Date.now();
-      if (ms <= 0) {
-        handleLogout();
-      } else {
-        logoutTimer = setTimeout(() => handleLogout(), ms);
-      }
-    } catch {
-      handleLogout();
-    }
-  }
+  const handleLogin = useCallback(({ user, userData, token }) => {
+    const currentUser = user || userData;
+    if (!currentUser || !token) return;
 
-  const handleLogin = ({ user, token }) => {
-    setUser(user);
+    setUser(currentUser);
     setToken(token);
     scheduleAutoLogout(token);
-  };
-
-  const handleLogout = () => {
-    setUser(null);
-    setToken(null);
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
-  };
+  }, [scheduleAutoLogout]);
 
   return (
-    <AuthContext.Provider value={{ user, token, loading, setUser: handleLogin, logout: handleLogout }}>
+    <AuthContext.Provider value={{ user, token, loading, login: handleLogin, setUser: handleLogin, logout: handleLogout }}>
       {children}
     </AuthContext.Provider>
   );
