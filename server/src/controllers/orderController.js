@@ -10,9 +10,14 @@ export const createOrder = async (req, res) => {
     const orderItems = [];
 
     for (const item of items) {
-      const { name, category, quantity, size, color } = item;
-      const product = await Product.findOne({ name, category });
-      if (!product) return res.status(404).json({ error: `Product "${name}" in "${category}" not found` });
+      const { productId, name, category, quantity, size, color } = item;
+      const product = productId
+        ? await Product.findById(productId)
+        : await Product.findOne({ name, category });
+
+      if (!product) {
+        return res.status(404).json({ error: `Product "${name}" in "${category}" not found` });
+      }
 
       totalAmount += product.price * quantity;
       orderItems.push({
@@ -28,7 +33,7 @@ export const createOrder = async (req, res) => {
 
     const newOrder = await Order.create({
       userId: req.user.id,
-      userName: req.user.name,
+      userName: req.user.name || req.user.email,
       items: orderItems,
       totalAmount,
     });
