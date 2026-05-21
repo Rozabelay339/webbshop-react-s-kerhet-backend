@@ -6,21 +6,26 @@ import "./Cart.css";
 
 const Cart = () => {
   const { cartItems, clearCart, removeFromCart, incrementQuantity, decrementQuantity } = useCart();
-  const { user } = useAuth();
+  const { user, token } = useAuth();
+  const activeToken = token || localStorage.getItem("token");
 
   const total = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
+  console.log("USER:", user);
+console.log("TOKEN:", token);
+console.log("ACTIVE TOKEN:", activeToken);
+
   const handleCheckout = async () => {
-    if (!user) return alert("Please log in to place an order.");
+    if (!user && !activeToken) return alert("Please log in to place an order.");
 
     try {
       await OrderService.createOrder(
         {
-          items: cartItems.map(({ productId, name, price, quantity }) => ({
-            productId, name, price, quantity
+          items: cartItems.map(({ productId, name, category, price, quantity, size, color }) => ({
+            productId, name, category, price, quantity, size, color
           })),
         },
-        user.token
+        activeToken
       );
       alert("Order placed successfully!");
       clearCart();

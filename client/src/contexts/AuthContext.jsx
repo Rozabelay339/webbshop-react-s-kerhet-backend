@@ -37,22 +37,27 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
     const savedToken = localStorage.getItem("token");
-    if (savedUser && savedToken) {
+    if (savedToken) {
       try {
-        setUser(JSON.parse(savedUser));
+        if (savedUser) {
+          setUser(JSON.parse(savedUser));
+        } else {
+          const decodedUser = jwtDecode(savedToken);
+          if (decodedUser?.id) setUser({ id: decodedUser.id });
+        }
+        setToken(savedToken);
+        axios.defaults.headers.common["Authorization"] = `Bearer ${savedToken}`;
+        scheduleAutoLogout(savedToken);
       } catch {
-        localStorage.removeItem("user");
+        handleLogout();
       }
-      setToken(savedToken);
-      axios.defaults.headers.common["Authorization"] = `Bearer ${savedToken}`;
-      scheduleAutoLogout(savedToken);
     }
     setLoading(false);
 
     return () => {
       if (logoutTimer.current) clearTimeout(logoutTimer.current);
     };
-  }, [scheduleAutoLogout]);
+  }, [handleLogout, scheduleAutoLogout]);
 
   useEffect(() => {
     if (user) localStorage.setItem("user", JSON.stringify(user));
@@ -71,11 +76,18 @@ export const AuthProvider = ({ children }) => {
 
   const handleLogin = useCallback(({ user, userData, token }) => {
     const currentUser = user || userData;
-    if (!currentUser || !token) return;
+    if (!currentUser || !token) {
+      throw new Error("Login response did not include a valid user and token.");
+    }
 
+    localStorage.setItem("user", JSON.stringify(currentUser));
+    localStorage.setItem("token", token);
+    axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
     setUser(currentUser);
     setToken(token);
     scheduleAutoLogout(token);
+
+    return { user: currentUser, token };
   }, [scheduleAutoLogout]);
 
   return (

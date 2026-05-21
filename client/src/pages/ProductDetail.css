@@ -90,8 +90,12 @@
 }
 
 .order-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
   margin-top: 12px;
+  text-decoration: none;
 }
 
 .order-button:disabled {

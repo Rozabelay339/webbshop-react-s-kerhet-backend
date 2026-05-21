@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { ProductService, OrderService } from "../services/apiService";
 import { useAuth } from "../contexts/AuthContext";
 import { useCart } from "../contexts/CartContext";
@@ -11,6 +11,8 @@ const ProductDetail = () => {
   const { id } = useParams();
   const { user, token, loading: authLoading } = useAuth();
   const { addToCart } = useCart();
+  const activeToken = token || localStorage.getItem("token");
+  const isAuthenticated = Boolean(user || activeToken);
 
   const [product, setProduct] = useState(null);
   const [selectedSize, setSelectedSize] = useState("");
@@ -41,7 +43,7 @@ const ProductDetail = () => {
   }, [id]);
 
   const handleOrder = async () => {
-    if (!user) return setOrderStatus("Log in to place an order.");
+    if (!activeToken) return setOrderStatus("Log in to place an order.");
     if (product.sizes?.length && !selectedSize) return setOrderStatus("Select a size.");
     if (product.colors?.length && !selectedColor) return setOrderStatus("Select a color.");
 
@@ -56,11 +58,16 @@ const ProductDetail = () => {
           color: selectedColor || "Default",
         }]
       };
-      await OrderService.createOrder(orderData, token || localStorage.getItem("token"));
+      await OrderService.createOrder(orderData, activeToken);
       addToCart({ ...product, size: selectedSize, color: selectedColor, quantity });
       setOrderStatus("Order placed successfully!");
-    } catch {
-      setOrderStatus("Failed to place order.");
+    } catch (err) {
+      const message = err.message || "";
+      setOrderStatus(
+        message.includes("401") || message.includes("Token")
+          ? "Your login has expired. Please log in again."
+          : `Failed to place order. ${message}`
+      );
     }
   };
 
@@ -124,7 +131,7 @@ const ProductDetail = () => {
 
         {authLoading ? (
           <p>Checking login status...</p>
-        ) : user ? (
+        ) : isAuthenticated ? (
           <button
             className="order-button"
             onClick={handleOrder}
@@ -133,7 +140,9 @@ const ProductDetail = () => {
             Add to Cart / Order
           </button>
         ) : (
-          <p>Please log in to place an order.</p>
+          <Link className="order-button login-order-link" to="/login" state={{ from: `/products/${id}` }}>
+            Log in to place an order
+          </Link>
         )}
 
         {orderStatus && <p className="order-status">{orderStatus}</p>}

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { UserService } from "../../services/apiService"; 
 import { useAuth } from "../../contexts/AuthContext";
 import './Login.css';
@@ -10,7 +10,9 @@ const Login = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const { login } = useAuth();
+  const returnTo = location.state?.from || '/products';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,9 +22,9 @@ const Login = () => {
     try {
       const session = await UserService.loginUser(email, password);
       login(session);
-      navigate('/products');
-    } catch {
-      setError('Invalid credentials');
+      navigate(returnTo, { replace: true });
+    } catch (err) {
+      setError(err.message || 'Invalid credentials');
     } finally {
       setLoading(false);
     }

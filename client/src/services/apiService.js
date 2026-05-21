@@ -1,13 +1,24 @@
-const BASE_URL = "http://localhost:3001/api";
+const configuredBaseUrl = import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL;
+const BASE_URL = configuredBaseUrl
+  ? configuredBaseUrl.replace(/\/$/, "")
+  : `${window.location.protocol}//${window.location.hostname || "127.0.0.1"}:3001/api`;
 
 const handleResponse = async (response) => {
+  const contentType = response.headers.get("Content-Type");
+  const isJson = contentType && contentType.includes("application/json");
+
   if (!response.ok) {
-    const errorMessage = await response.text();
-    throw new Error(errorMessage || `HTTP error! Status: ${response.status}`);
+    const errorPayload = isJson ? await response.json() : await response.text();
+    const errorMessage =
+      errorPayload?.message ||
+      errorPayload?.error ||
+      errorPayload ||
+      `HTTP error! Status: ${response.status}`;
+
+    throw new Error(errorMessage);
   }
 
-  const contentType = response.headers.get("Content-Type");
-  if (contentType && contentType.includes("application/json")) {
+  if (isJson) {
     return await response.json();
   }
   return null;
