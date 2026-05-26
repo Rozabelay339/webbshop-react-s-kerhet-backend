@@ -20,19 +20,34 @@ const ProductDetail = () => {
   const [quantity, setQuantity] = useState(1);
   const [orderStatus, setOrderStatus] = useState("");
 
+  const availableSizes = product?.sizes?.length
+    ? product.sizes
+    : product?.size
+      ? [product.size]
+      : [];
+  const availableColors = product?.colors?.length
+    ? product.colors
+    : product?.color
+      ? [product.color]
+      : [];
+
   useEffect(() => {
     const fetchProduct = async () => {
       try {
         const data = await ProductService.getProductById(id);
         setProduct(data);
         if (data.sizes?.length) setSelectedSize(data.sizes[0]);
+        else if (data.size) setSelectedSize(data.size);
         if (data.colors?.length) setSelectedColor(data.colors[0]);
+        else if (data.color) setSelectedColor(data.color);
       } catch {
         const fallbackProduct = fallbackProducts.find(item => item._id === id);
         if (fallbackProduct) {
           setProduct(fallbackProduct);
           if (fallbackProduct.sizes?.length) setSelectedSize(fallbackProduct.sizes[0]);
+          else if (fallbackProduct.size) setSelectedSize(fallbackProduct.size);
           if (fallbackProduct.colors?.length) setSelectedColor(fallbackProduct.colors[0]);
+          else if (fallbackProduct.color) setSelectedColor(fallbackProduct.color);
           setOrderStatus("Demo product loaded without backend connection.");
         } else {
           setOrderStatus("Failed to load product details.");
@@ -44,8 +59,8 @@ const ProductDetail = () => {
 
   const handleOrder = async () => {
     if (!activeToken) return setOrderStatus("Log in to place an order.");
-    if (product.sizes?.length && !selectedSize) return setOrderStatus("Select a size.");
-    if (product.colors?.length && !selectedColor) return setOrderStatus("Select a color.");
+    if (availableSizes.length && !selectedSize) return setOrderStatus("Select a size.");
+    if (availableColors.length && !selectedColor) return setOrderStatus("Select a color.");
 
     try {
       const orderData = {
@@ -54,8 +69,8 @@ const ProductDetail = () => {
           name: product.name,
           category: product.category,
           quantity,
-          size: selectedSize || "Standard",
-          color: selectedColor || "Default",
+          size: selectedSize || product.size || product.sizes?.[0] || "Standard",
+          color: selectedColor || product.color || product.colors?.[0] || "Default",
         }]
       };
       await OrderService.createOrder(orderData, activeToken);
@@ -84,11 +99,11 @@ const ProductDetail = () => {
         <p className="product-price">${product.price}</p>
         <p className="product-description">{product.description}</p>
 
-        {product.colors?.length > 0 && (
+        {availableColors.length > 0 && (
           <div className="product-options">
             <h3>Select Color:</h3>
             <div className="color-options">
-              {product.colors.map(color => (
+              {availableColors.map(color => (
                 <button
                   key={color}
                   className={selectedColor === color ? "selected" : ""}
@@ -101,11 +116,11 @@ const ProductDetail = () => {
           </div>
         )}
 
-        {product.sizes?.length > 0 && (
+        {availableSizes.length > 0 && (
           <div className="product-options">
             <h3>Select Size:</h3>
             <div className="size-options">
-              {product.sizes.map(size => (
+              {availableSizes.map(size => (
                 <button
                   key={size}
                   className={selectedSize === size ? "selected" : ""}
@@ -135,7 +150,7 @@ const ProductDetail = () => {
           <button
             className="order-button"
             onClick={handleOrder}
-            disabled={(product.sizes?.length && !selectedSize) || (product.colors?.length && !selectedColor)}
+            disabled={(availableSizes.length && !selectedSize) || (availableColors.length && !selectedColor)}
           >
             Add to Cart / Order
           </button>

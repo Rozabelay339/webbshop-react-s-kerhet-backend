@@ -1,7 +1,7 @@
 .portfolio-page {
   width: min(1120px, calc(100% - 32px));
   margin: 0 auto;
-  padding: 78px 0 96px;
+  padding: 54px 0 76px;
 }
 
 .portfolio-hero {
@@ -22,7 +22,7 @@
 }
 
 .portfolio-copy {
-  padding: 46px;
+  padding: 34px;
   background:
     linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
@@ -40,25 +40,25 @@
 .portfolio-copy h1 {
   margin: 0;
   color: var(--text);
-  font-size: clamp(3.8rem, 9vw, 8rem);
-  font-weight: 900;
-  line-height: 0.9;
+  font-size: clamp(2.4rem, 6vw, 4.8rem);
+  font-weight: 760;
+  line-height: 0.98;
   letter-spacing: 0;
 }
 
 .portfolio-lead {
   max-width: 680px;
-  margin: 24px 0 0;
+  margin: 18px 0 0;
   color: var(--muted);
-  font-size: 1.2rem;
-  line-height: 1.75;
+  font-size: 1rem;
+  line-height: 1.65;
 }
 
 .portfolio-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 14px;
-  margin-top: 34px;
+  margin-top: 24px;
 }
 
 .portfolio-actions a {
@@ -69,7 +69,7 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding: 24px;
+  padding: 20px;
   background: #fafafa;
   color: #09090b;
 }
@@ -104,8 +104,8 @@
 
 .portfolio-profile-card h2 {
   margin: 10px 0;
-  font-size: 2.2rem;
-  line-height: 1;
+  font-size: 1.55rem;
+  line-height: 1.08;
   letter-spacing: 0;
 }
 
@@ -123,8 +123,8 @@
 }
 
 .portfolio-panel {
-  min-height: 260px;
-  padding: 30px;
+  min-height: 210px;
+  padding: 24px;
 }
 
 .portfolio-panel.large {
@@ -140,23 +140,24 @@
 .portfolio-contact-band h2 {
   margin: 18px 0 12px;
   color: var(--text);
-  font-size: clamp(2rem, 4vw, 3.6rem);
-  line-height: 0.98;
+  font-size: clamp(1.45rem, 3vw, 2.45rem);
+  line-height: 1.06;
   letter-spacing: 0;
 }
 
 .portfolio-panel h3 {
   margin: 18px 0 10px;
   color: var(--text);
-  font-size: 1.8rem;
-  line-height: 1;
+  font-size: 1.28rem;
+  line-height: 1.1;
   letter-spacing: 0;
 }
 
 .portfolio-panel p {
   margin: 0;
   color: var(--muted);
-  line-height: 1.7;
+  font-size: 0.94rem;
+  line-height: 1.62;
 }
 
 .portfolio-panel.accent {
@@ -204,7 +205,7 @@
   gap: 24px;
   align-items: center;
   margin-top: 18px;
-  padding: 34px;
+  padding: 24px;
 }
 
 .portfolio-contact-band h2 {
@@ -223,11 +224,12 @@
   align-items: center;
   gap: 9px;
   min-height: 42px;
-  padding: 0 15px;
+  padding: 0 13px;
   border: 1px solid var(--line-strong);
   border-radius: 999px;
   color: var(--text);
-  font-weight: 800;
+  font-size: 0.9rem;
+  font-weight: 650;
   text-decoration: none;
 }
 

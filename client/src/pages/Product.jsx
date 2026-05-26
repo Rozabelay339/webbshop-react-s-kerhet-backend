@@ -47,7 +47,7 @@ const Product = () => {
         <h1>All Products</h1>
         <p>
           En ren produktvy som visar sök, produktkort och navigation till detaljer.
-          Det här är en viktig del av caset eftersom arbetsgivare snabbt ser UI-flödet.
+          
         </p>
         {usingFallback && (
           <p className="fallback-note">
