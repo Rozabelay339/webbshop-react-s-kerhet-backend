@@ -37,6 +37,9 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
     const savedToken = localStorage.getItem("token");
+    console.log("Saved user:", savedUser);
+console.log("Saved token:", savedToken);
+console.log("Current React user:", user);
     if (savedToken) {
       try {
         if (savedUser) {
@@ -75,6 +78,7 @@ export const AuthProvider = ({ children }) => {
   }, [token]);
 
   const handleLogin = useCallback(({ user, userData, token }) => {
+    console.log("Login data:", { user, userData, token });
     const currentUser = user || userData;
     if (!currentUser || !token) {
       throw new Error("Login response did not include a valid user and token.");
@@ -91,7 +95,16 @@ export const AuthProvider = ({ children }) => {
   }, [scheduleAutoLogout]);
 
   return (
-    <AuthContext.Provider value={{ user, token, loading, login: handleLogin, setUser: handleLogin, logout: handleLogout }}>
+    <AuthContext.Provider
+  value={{
+    user,
+    token,
+    loading,
+    login: handleLogin,
+    setUser,
+    logout: handleLogout
+  }}
+>
       {children}
     </AuthContext.Provider>
   );

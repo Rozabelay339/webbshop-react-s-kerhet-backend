@@ -13,6 +13,8 @@ const Login = () => {
   const location = useLocation();
   const { login } = useAuth();
   const returnTo = location.state?.from || '/products';
+  console.log("ReturnTo:", returnTo);
+console.log("Location state:", location.state);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,9 +22,16 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const session = await UserService.loginUser(email, password);
-      login(session);
-      navigate(returnTo, { replace: true });
+     const session = await UserService.loginUser(email, password);
+
+await login(session);
+
+console.log("Login finished");
+console.log("Navigating to:", returnTo);
+
+setTimeout(() => {
+  navigate(returnTo, { replace: true });
+}, 100);
     } catch (err) {
       setError(err.message || 'Invalid credentials');
     } finally {

@@ -1,11 +1,20 @@
 import React from 'react';
+import { Navigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 const Checkout = () => {
   const { user } = useAuth();
 
+  console.log("Checkout user:", user);
+
   if (!user) {
-    return <p className="cart-empty">You need to log in to place an order.</p>;
+    return (
+      <Navigate
+        to="/login"
+        state={{ from: '/checkout' }}
+        replace
+      />
+    );
   }
 
   return (

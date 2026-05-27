@@ -138,12 +138,6 @@ button {
   background: transparent;
 }
 
-:root[data-theme="light"] .home-hero {
-  background:
-    linear-gradient(rgba(8, 18, 20, 0.055) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(8, 18, 20, 0.055) 1px, transparent 1px),
-    linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(234, 248, 244, 0.9));
-}
 
 .home-hero::after {
   content: "";
@@ -215,7 +209,7 @@ button {
   max-width: 940px;
   margin: 0;
   color: var(--text);
-  font-size: clamp(4.2rem, 10vw, 8.7rem);
+  font-size: clamp(2.2rem, 10vw, 4.7rem);
   font-weight: 900;
   line-height: 0.82;
   letter-spacing: 0;

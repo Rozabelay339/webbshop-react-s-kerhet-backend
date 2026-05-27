@@ -1,25 +1,14 @@
 .navbar {
-  position: sticky;
   top: 0;
   z-index: 100;
   display: grid;
   grid-template-columns: auto 1fr auto;
-  gap: 24px;
   align-items: center;
-  width: min(1180px, calc(100% - 24px));
   margin: 12px auto 0;
   padding: 12px 16px;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: rgba(9, 9, 11, 0.78);
-  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.24);
-  backdrop-filter: blur(18px);
+
 }
 
-:root[data-theme="light"] .navbar {
-  background: rgba(255, 255, 255, 0.78);
-  box-shadow: 0 18px 50px rgba(10, 74, 68, 0.12);
-}
 
 .nav-logo {
   display: inline-flex;
