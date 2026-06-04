@@ -1,24 +1,26 @@
-import React, { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useLocation, useParams } from "react-router-dom";
 import { ProductService, OrderService } from "../services/apiService";
-import { useAuth } from "../contexts/AuthContext";
-import { useCart } from "../contexts/CartContext";
-import imageMap from '../assets/ImageMap';
+import { useAuth } from "../contexts/authContextValue";
+import { useCart } from "../contexts/cartContextValue";
+import imageMap from "../assets/ImageMap";
 import { fallbackProducts } from "../data/fallbackProducts";
-import './ProductDetail.css';
+import "./ProductDetail.css";
 
 const ProductDetail = () => {
   const { id } = useParams();
-  const { user, token, loading: authLoading } = useAuth();
+  const location = useLocation();
+  const { token, isAuthenticated, loading: authLoading, logout } = useAuth();
   const { addToCart } = useCart();
-  const activeToken = token || localStorage.getItem("token");
-  const isAuthenticated = Boolean(user || activeToken);
+  const activeToken = token || localStorage.getItem("token") || location.state?.authToken;
+  const canPlaceOrder = isAuthenticated || Boolean(activeToken);
 
   const [product, setProduct] = useState(null);
   const [selectedSize, setSelectedSize] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [orderStatus, setOrderStatus] = useState("");
+  const [isOrdering, setIsOrdering] = useState(false);
 
   const availableSizes = product?.sizes?.length
     ? product.sizes
@@ -41,7 +43,7 @@ const ProductDetail = () => {
         if (data.colors?.length) setSelectedColor(data.colors[0]);
         else if (data.color) setSelectedColor(data.color);
       } catch {
-        const fallbackProduct = fallbackProducts.find(item => item._id === id);
+        const fallbackProduct = fallbackProducts.find((item) => item._id === id);
         if (fallbackProduct) {
           setProduct(fallbackProduct);
           if (fallbackProduct.sizes?.length) setSelectedSize(fallbackProduct.sizes[0]);
@@ -54,41 +56,56 @@ const ProductDetail = () => {
         }
       }
     };
+
     fetchProduct();
   }, [id]);
 
   const handleOrder = async () => {
-    if (!activeToken) return setOrderStatus("Log in to place an order.");
+    if (!canPlaceOrder || !activeToken) {
+      setOrderStatus("Log in to place an order.");
+      return;
+    }
+
     if (availableSizes.length && !selectedSize) return setOrderStatus("Select a size.");
     if (availableColors.length && !selectedColor) return setOrderStatus("Select a color.");
 
+    setIsOrdering(true);
+    setOrderStatus("");
+
     try {
-      const orderData = {
-        items: [{
-          productId: product._id,
-          name: product.name,
-          category: product.category,
-          quantity,
-          size: selectedSize || product.size || product.sizes?.[0] || "Standard",
-          color: selectedColor || product.color || product.colors?.[0] || "Default",
-        }]
+      const orderItem = {
+        productId: product._id,
+        name: product.name,
+        category: product.category,
+        price: product.price,
+        quantity,
+        size: selectedSize || product.size || product.sizes?.[0] || "Standard",
+        color: selectedColor || product.color || product.colors?.[0] || "Default",
       };
-      await OrderService.createOrder(orderData, activeToken);
+
+      await OrderService.createOrder({ items: [orderItem] }, activeToken);
       addToCart({ ...product, size: selectedSize, color: selectedColor, quantity });
       setOrderStatus("Order placed successfully!");
     } catch (err) {
       const message = err.message || "";
-      setOrderStatus(
-        message.includes("401") || message.includes("Token")
-          ? "Your login has expired. Please log in again."
-          : `Failed to place order. ${message}`
-      );
+      const isAuthError = message.includes("401") || message.toLowerCase().includes("token") || message.toLowerCase().includes("authorized");
+
+      if (isAuthError) {
+        logout();
+        setOrderStatus("Your login has expired. Please log in again.");
+      } else {
+        setOrderStatus(`Failed to place order. ${message}`);
+      }
+    } finally {
+      setIsOrdering(false);
     }
   };
 
   if (!product) return <p>Loading...</p>;
 
   const productImage = product.image || imageMap[product.name] || "/placeholder.jpg";
+  const loginTarget = `/products/${id}`;
+  const orderDisabled = isOrdering || (availableSizes.length && !selectedSize) || (availableColors.length && !selectedColor);
 
   return (
     <div className="product-detail">
@@ -103,7 +120,7 @@ const ProductDetail = () => {
           <div className="product-options">
             <h3>Select Color:</h3>
             <div className="color-options">
-              {availableColors.map(color => (
+              {availableColors.map((color) => (
                 <button
                   key={color}
                   className={selectedColor === color ? "selected" : ""}
@@ -120,7 +137,7 @@ const ProductDetail = () => {
           <div className="product-options">
             <h3>Select Size:</h3>
             <div className="size-options">
-              {availableSizes.map(size => (
+              {availableSizes.map((size) => (
                 <button
                   key={size}
                   className={selectedSize === size ? "selected" : ""}
@@ -140,22 +157,18 @@ const ProductDetail = () => {
             min="1"
             max={product.quantity}
             value={quantity}
-            onChange={(e) => setQuantity(Number(e.target.value))}
+            onChange={(e) => setQuantity(Math.max(1, Number(e.target.value)))}
           />
         </div>
 
         {authLoading ? (
           <p>Checking login status...</p>
-        ) : isAuthenticated ? (
-          <button
-            className="order-button"
-            onClick={handleOrder}
-            disabled={(availableSizes.length && !selectedSize) || (availableColors.length && !selectedColor)}
-          >
-            Add to Cart / Order
+        ) : canPlaceOrder ? (
+          <button className="order-button" onClick={handleOrder} disabled={orderDisabled}>
+            {isOrdering ? "Placing order..." : "Add to Cart / Order"}
           </button>
         ) : (
-          <Link className="order-button login-order-link" to="/login" state={{ from: `/products/${id}` }}>
+          <Link className="order-button login-order-link" to="/login" state={{ from: loginTarget }}>
             Log in to place an order
           </Link>
         )}

@@ -1,28 +1,34 @@
 import React from "react";
-import { useCart } from "../../contexts/CartContext";
-import { useAuth } from "../../contexts/AuthContext";
+import { useCart } from "../../contexts/cartContextValue";
+import { useAuth } from "../../contexts/authContextValue";
 import { OrderService } from "../../services/apiService";
 import "./Cart.css";
 
 const Cart = () => {
   const { cartItems, clearCart, removeFromCart, incrementQuantity, decrementQuantity } = useCart();
-  const { user, token } = useAuth();
+  const { token, isAuthenticated } = useAuth();
   const activeToken = token || localStorage.getItem("token");
+  const canCheckout = isAuthenticated || Boolean(activeToken);
 
   const total = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
-  console.log("USER:", user);
-console.log("TOKEN:", token);
-console.log("ACTIVE TOKEN:", activeToken);
-
   const handleCheckout = async () => {
-    if (!user && !activeToken) return alert("Please log in to place an order.");
+    if (!canCheckout || !activeToken) {
+      alert("Please log in to place an order.");
+      return;
+    }
 
     try {
       await OrderService.createOrder(
         {
-          items: cartItems.map(({ productId, name, category, price, quantity, size, color }) => ({
-            productId, name, category, price, quantity, size, color
+          items: cartItems.map(({ productId, _id, name, category, price, quantity, size, color }) => ({
+            productId: productId || _id,
+            name,
+            category,
+            price,
+            quantity,
+            size,
+            color,
           })),
         },
         activeToken
@@ -30,7 +36,7 @@ console.log("ACTIVE TOKEN:", activeToken);
       alert("Order placed successfully!");
       clearCart();
     } catch (err) {
-      alert("Checkout failed: " + err.message);
+      alert(`Checkout failed: ${err.message}`);
     }
   };
 
@@ -40,7 +46,7 @@ console.log("ACTIVE TOKEN:", activeToken);
     <div className="cart-container">
       <h2>Your Cart</h2>
       <ul className="cart-items">
-        {cartItems.map(item => (
+        {cartItems.map((item) => (
           <li key={item.productId} className="cart-item">
             <span>{item.name}</span>
             <div>

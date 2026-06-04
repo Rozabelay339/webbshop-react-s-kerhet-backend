@@ -1,7 +1,6 @@
-import { createContext, useState, useContext, useEffect } from "react";
-import { useAuth } from "./AuthContext";
-
-const CartContext = createContext();
+import { useEffect, useState } from "react";
+import { useAuth } from "./authContextValue";
+import { CartContext } from "./cartContextValue";
 
 export const CartProvider = ({ children }) => {
   const { user } = useAuth();
@@ -33,16 +32,19 @@ export const CartProvider = ({ children }) => {
   };
 
   const addToCart = (product) => {
+    const productId = product.productId || product._id;
+    const quantityToAdd = Math.max(1, Number(product.quantity) || 1);
+
     setCartItems(prev => {
-      const existing = prev.find(item => item.productId === product._id);
+      const existing = prev.find(item => item.productId === productId);
       if (existing) {
         return prev.map(item =>
-          item.productId === product._id
-            ? { ...item, quantity: item.quantity + 1 }
+          item.productId === productId
+            ? { ...item, quantity: item.quantity + quantityToAdd }
             : item
         );
       }
-      return [...prev, { ...product, productId: product._id, quantity: 1 }];
+      return [...prev, { ...product, productId, quantity: quantityToAdd }];
     });
   };
 
@@ -71,4 +73,3 @@ export const CartProvider = ({ children }) => {
   );
 };
 
-export const useCart = () => useContext(CartContext);

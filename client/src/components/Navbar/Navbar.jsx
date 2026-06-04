@@ -1,8 +1,8 @@
 import React from "react";
 import { NavLink, Link } from "react-router-dom";
 import { FaMoon, FaShoppingBag, FaShoppingCart, FaSun } from "react-icons/fa";
-import { useCart } from "../../contexts/CartContext";
-import { useAuth } from "../../contexts/AuthContext";
+import { useCart } from "../../contexts/cartContextValue";
+import { useAuth } from "../../contexts/authContextValue";
 import "./Navbar.css";
 
 const portfolioUrl = "https://roza-belay-portfolio.netlify.app/";
