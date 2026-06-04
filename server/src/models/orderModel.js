@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const orderSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
@@ -15,6 +15,7 @@ const orderSchema = new mongoose.Schema({
     },
   ],
   totalAmount: { type: Number, required: true },
+  totalPrice: { type: Number, required: true },
   status: { type: String, default: "pending" },
 }, { timestamps: true });
 

@@ -1,5 +1,5 @@
-import Order from '../models/orderModel.js';
-import Product from '../models/productModel.js';
+import Order from "../models/orderModel.js";
+import Product from "../models/productModel.js";
 
 export const createOrder = async (req, res) => {
   try {
@@ -19,7 +19,8 @@ export const createOrder = async (req, res) => {
         return res.status(404).json({ error: `Product "${name}" in "${category}" not found` });
       }
 
-      totalAmount += product.price * quantity;
+      const safeQuantity = Math.max(1, Number(quantity) || 1);
+      totalAmount += product.price * safeQuantity;
       orderItems.push({
         productId: product._id,
         name: product.name,
@@ -27,15 +28,16 @@ export const createOrder = async (req, res) => {
         price: product.price,
         size: size || null,
         color: color || null,
-        quantity,
+        quantity: safeQuantity,
       });
     }
 
     const newOrder = await Order.create({
-      userId: req.user.id,
+      userId: req.user._id,
       userName: req.user.name || req.user.email,
       items: orderItems,
       totalAmount,
+      totalPrice: totalAmount,
     });
 
     res.status(201).json(newOrder);
@@ -44,41 +46,50 @@ export const createOrder = async (req, res) => {
     res.status(500).json({ error: "Failed to create order" });
   }
 };
+
 export const getAllOrders = async (req, res) => {
   try {
     const orders = await Order.find();
     res.json(orders);
-  } catch (err) { res.status(500).json({ error: err.message }); }
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
 
 export const getUserOrders = async (req, res) => {
   try {
-    const orders = await Order.find({ userId: req.user.id });
+    const orders = await Order.find({ userId: req.user._id });
     res.json(orders);
-  } catch (err) { res.status(500).json({ error: err.message }); }
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
-
 
 export const getOrderById = async (req, res) => {
   try {
     const order = await Order.findById(req.params.id);
     if (!order) return res.status(404).json({ error: "Order not found" });
     res.json(order);
-  } catch (err) { res.status(500).json({ error: err.message }); }
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
-
 
 export const deleteOrderById = async (req, res) => {
   try {
     const order = await Order.findByIdAndDelete(req.params.id);
     if (!order) return res.status(404).json({ error: "Order not found" });
     res.json({ message: "Order deleted" });
-  } catch (err) { res.status(500).json({ error: err.message }); }
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
 
 export const deleteAllOrders = async (req, res) => {
   try {
     await Order.deleteMany();
     res.json({ message: "All orders deleted" });
-  } catch (err) { res.status(500).json({ error: err.message }); }
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
